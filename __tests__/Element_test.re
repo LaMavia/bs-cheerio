@@ -1,6 +1,12 @@
 open Jest;
 open Expect;
 
+module Helpers = {
+  let exn_of_nullable = n => n->Js.Nullable.toOption->Belt.Option.getExn;
+  let def_of_nullable = (n, def) =>
+    n->Js.Nullable.toOption->Belt.Option.getWithDefault(def);
+};
+
 let html = {|
   <!DOCTYPE html>
 <html lang="en">
@@ -86,6 +92,34 @@ describe("first", () => {
     ->Js.Nullable.toOption
     |> expect
     |> toEqual(Some("LI_0"))
+  });
+});
+
+describe("length", () => {
+  let dom = Cheerio.load(html);
+  test("returns the number of matched items", () => {
+    dom->Cheerio.select("li")->Element.length |> expect |> toEqual(4)
+  });
+});
+
+describe("get", () => {
+  let dom = Cheerio.load(html);
+
+  test("returns all the elements", () => {
+    dom->Cheerio.select("li")->Element.get0->Element.length
+    |> expect
+    |> toEqual(4)
+  });
+
+  test("returns i-th element when the index is given", () => {
+    dom
+    ->Cheerio.select("li")
+    ->Element.get1(1)
+    ->Element.load
+    ->Element.attr1("data-d")
+    ->Helpers.def_of_nullable("")
+    |> expect
+    |> toEqual("LI_1_data")
   });
 });
 
@@ -179,10 +213,33 @@ describe("each", () => {
     dom
     ->Cheerio.select("ul")
     ->Element.contents
-    ->Element.each((i, el) => {
-        el->Element.load->Element.type_->Js.Console.log;
-        visited := (visited^)->Belt.List.mapWithIndex((j, v) => v || j == i);
+    ->Element.each((i, _) => {
+        // el->Element.load->Element.type_->Js.Console.log;
+        visited := (visited^)->Belt.List.mapWithIndex((j, v) => v || j == i)
       });
     expect(visited^) |> toEqual([true, true, true]);
+  });
+});
+
+describe("map", () => {
+  let dom = Cheerio.load(html);
+
+  test("maps over items", () => {
+    dom
+    ->Cheerio.select("li")
+    ->Element.map((_, el) => el->Element.load->Element.text0)
+    ->Element.toArray
+    |> expect
+    |> toEqual([|"LI_0", "LI_1", "LI_2", ""|])
+  });
+});
+
+describe("toArray", () => {
+  let dom = Cheerio.load(html);
+
+  test("returns a list", () => {
+    dom->Cheerio.select("li")->Element.toArray->Belt.Array.length
+    |> expect
+    |> toEqual(4)
   });
 });

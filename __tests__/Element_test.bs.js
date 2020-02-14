@@ -9,6 +9,19 @@ var Caml_option = require("bs-platform/lib/js/caml_option.js");
 var Cheerio$BsCheerio = require("../src/Cheerio.bs.js");
 var Element$BsCheerio = require("../src/Element.bs.js");
 
+function exn_of_nullable(n) {
+  return Belt_Option.getExn((n == null) ? undefined : Caml_option.some(n));
+}
+
+function def_of_nullable(n, def) {
+  return Belt_Option.getWithDefault((n == null) ? undefined : Caml_option.some(n), def);
+}
+
+var Helpers = {
+  exn_of_nullable: exn_of_nullable,
+  def_of_nullable: def_of_nullable
+};
+
 var html = "\n  <!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\"/>\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>\n  <meta http-equiv=\"X-UA-Compatible\" content=\"ie=edge\"/>\n  <title>Document</title>\n</head>\n<body>\n  <input type=\"text\" name=\"text_input\" id=\"input-text\" value=\"text\"/>\n  <ul className=\"ul_class\">\n    <li class=\"ul_class__li_class\" id=\"LI_0_id\">LI_0</li>\n    <li class=\"ul_class__li_class\" id=\"LI_1_id\" data-d=\"LI_1_data\">LI_1</li>\n    <li class=\"ul_class__li_class\">LI_2</li>\n    <li class=\"ul_class__li_class\"></li>\n  </ul>\n</body>\n</html>\n";
 
 Jest.describe("text", (function (param) {
@@ -50,6 +63,24 @@ Jest.describe("first", (function (param) {
         var dom = Cheerio.load(html);
         return Jest.test("works", (function (param) {
                       return Jest.Expect.toEqual("LI_0", Jest.Expect.expect(Caml_option.nullable_to_opt(Cheerio$BsCheerio.select(dom, "ul li").first().text())));
+                    }));
+      }));
+
+Jest.describe("length", (function (param) {
+        var dom = Cheerio.load(html);
+        return Jest.test("returns the number of matched items", (function (param) {
+                      return Jest.Expect.toEqual(4, Jest.Expect.expect(Cheerio$BsCheerio.select(dom, "li").length));
+                    }));
+      }));
+
+Jest.describe("get", (function (param) {
+        var dom = Cheerio.load(html);
+        Jest.test("returns all the elements", (function (param) {
+                return Jest.Expect.toEqual(4, Jest.Expect.expect(Cheerio$BsCheerio.select(dom, "li").get().length));
+              }));
+        return Jest.test("returns i-th element when the index is given", (function (param) {
+                      var n = Cheerio(Cheerio$BsCheerio.select(dom, "li").get(1)).attr("data-d");
+                      return Jest.Expect.toEqual("LI_1_data", Jest.Expect.expect(Belt_Option.getWithDefault((n == null) ? undefined : Caml_option.some(n), "")));
                     }));
       }));
 
@@ -108,8 +139,7 @@ Jest.describe("each", (function (param) {
                           ]
                         ]
                       };
-                      Cheerio$BsCheerio.select(dom, "ul").contents().each((function (i, el) {
-                              console.log(Element$BsCheerio.type_(Cheerio(el)));
+                      Cheerio$BsCheerio.select(dom, "ul").contents().each((function (i, param) {
                               visited.contents = Belt_List.mapWithIndex(visited.contents, (function (j, v) {
                                       if (v) {
                                         return true;
@@ -132,5 +162,27 @@ Jest.describe("each", (function (param) {
                     }));
       }));
 
+Jest.describe("map", (function (param) {
+        var dom = Cheerio.load(html);
+        return Jest.test("maps over items", (function (param) {
+                      return Jest.Expect.toEqual([
+                                  "LI_0",
+                                  "LI_1",
+                                  "LI_2",
+                                  ""
+                                ], Jest.Expect.expect(Cheerio$BsCheerio.select(dom, "li").map((function (param, el) {
+                                              return Cheerio(el).text();
+                                            })).toArray()));
+                    }));
+      }));
+
+Jest.describe("toArray", (function (param) {
+        var dom = Cheerio.load(html);
+        return Jest.test("returns a list", (function (param) {
+                      return Jest.Expect.toEqual(4, Jest.Expect.expect(Cheerio$BsCheerio.select(dom, "li").toArray().length));
+                    }));
+      }));
+
+exports.Helpers = Helpers;
 exports.html = html;
 /*  Not a pure module */

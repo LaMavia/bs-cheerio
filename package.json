@@ -1,6 +1,6 @@
 {
   "name": "bs-cheerio",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "ReasonML bindings for cheerio",
   "scripts": {
     "build": "bsb -make-world",

@@ -9,6 +9,10 @@ type tNull = Js.Nullable.t(t);
 [@bs.send] external html: tNull => Js.Nullable.t(string) = "html";
 [@bs.send] external val_: tNull => Js.Nullable.t(string) = "val";
 [@bs.send] external first: tNull => tNull = "first";
+[@bs.get] external length: tNull => int = "length";
+
+[@bs.send] external get0: tNull => tNull = "get";
+[@bs.send] external get1: (tNull, int) => tNull = "get";
 
 [@bs.send] external attr1: (tNull, string) => Js.Nullable.t(string) = "attr";
 [@bs.send] external attr2: (tNull, string, 'a) => tNull = "attr";
@@ -25,6 +29,9 @@ external prev: (tNull, array(string)) => tNull = "prev";
 
 [@bs.send] external contents: tNull => tNull = "contents";
 [@bs.send] external each: (tNull, (int, tNull) => 'a) => unit = "each";
+[@bs.send] external map: (tNull, (int, tNull) => 'a) => tNull = "map";
+[@bs.send] external toArray: tNull => array('a) = "toArray";
+// [@bs.send] external map
 
 type node_type =
   | Element
