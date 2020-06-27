@@ -2,6 +2,7 @@
 'use strict';
 
 var Jest = require("@glennsl/bs-jest/src/jest.js");
+var Curry = require("bs-platform/lib/js/curry.js");
 var Cheerio = require("cheerio");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_Option = require("bs-platform/lib/js/belt_Option.js");
@@ -27,13 +28,13 @@ var html = "\n  <!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"U
 Jest.describe("text", (function (param) {
         var dom = Cheerio.load(html);
         Jest.test("with text", (function (param) {
-                return Jest.Expect.toBe("LI_0", Jest.Expect.expect(Caml_option.nullable_to_opt(Cheerio$BsCheerio.select(dom, "ul li#LI_0_id").text())));
+                return Jest.Expect.toBe("LI_0", Jest.Expect.expect(Caml_option.nullable_to_opt(Curry._2(Cheerio$BsCheerio.select, dom, "ul li#LI_0_id").text())));
               }));
         Jest.test("without text", (function (param) {
-                return Jest.Expect.toEqual("", Jest.Expect.expect(Caml_option.nullable_to_opt(Cheerio$BsCheerio.select(dom, "ul li:nth-child(4)").text())));
+                return Jest.Expect.toEqual("", Jest.Expect.expect(Caml_option.nullable_to_opt(Curry._2(Cheerio$BsCheerio.select, dom, "ul li:nth-child(4)").text())));
               }));
         return Jest.test("replaces text", (function (param) {
-                      var el = Cheerio$BsCheerio.select(dom, "li#LI_0_id");
+                      var el = Curry._2(Cheerio$BsCheerio.select, dom, "li#LI_0_id");
                       var new_text = "new text";
                       el.text(new_text);
                       return Jest.Expect.toEqual(new_text, Jest.Expect.expect(Belt_Option.getExn(Caml_option.nullable_to_opt(el.text()))));
@@ -43,7 +44,7 @@ Jest.describe("text", (function (param) {
 Jest.describe("html", (function (param) {
         var dom = Cheerio.load(html);
         return Jest.test("works", (function (param) {
-                      var match = Cheerio$BsCheerio.select(dom, "ul").html();
+                      var match = Curry._2(Cheerio$BsCheerio.select, dom, "ul").html();
                       if (match == null) {
                         return Jest.Expect.toEqual(true, Jest.Expect.expect(false));
                       } else {
@@ -55,31 +56,31 @@ Jest.describe("html", (function (param) {
 Jest.describe("val", (function (param) {
         var dom = Cheerio.load(html);
         return Jest.test("works", (function (param) {
-                      return Jest.Expect.toEqual("text", Jest.Expect.expect(Caml_option.nullable_to_opt(Cheerio$BsCheerio.select(dom, "input[name=text_input]").val())));
+                      return Jest.Expect.toEqual("text", Jest.Expect.expect(Caml_option.nullable_to_opt(Curry._2(Cheerio$BsCheerio.select, dom, "input[name=text_input]").val())));
                     }));
       }));
 
 Jest.describe("first", (function (param) {
         var dom = Cheerio.load(html);
         return Jest.test("works", (function (param) {
-                      return Jest.Expect.toEqual("LI_0", Jest.Expect.expect(Caml_option.nullable_to_opt(Cheerio$BsCheerio.select(dom, "ul li").first().text())));
+                      return Jest.Expect.toEqual("LI_0", Jest.Expect.expect(Caml_option.nullable_to_opt(Curry._2(Cheerio$BsCheerio.select, dom, "ul li").first().text())));
                     }));
       }));
 
 Jest.describe("length", (function (param) {
         var dom = Cheerio.load(html);
         return Jest.test("returns the number of matched items", (function (param) {
-                      return Jest.Expect.toEqual(4, Jest.Expect.expect(Cheerio$BsCheerio.select(dom, "li").length));
+                      return Jest.Expect.toEqual(4, Jest.Expect.expect(Curry._2(Cheerio$BsCheerio.select, dom, "li").length));
                     }));
       }));
 
 Jest.describe("get", (function (param) {
         var dom = Cheerio.load(html);
         Jest.test("returns all the elements", (function (param) {
-                return Jest.Expect.toEqual(4, Jest.Expect.expect(Cheerio$BsCheerio.select(dom, "li").get().length));
+                return Jest.Expect.toEqual(4, Jest.Expect.expect(Curry._2(Cheerio$BsCheerio.select, dom, "li").get().length));
               }));
         return Jest.test("returns i-th element when the index is given", (function (param) {
-                      var n = Cheerio(Cheerio$BsCheerio.select(dom, "li").get(1)).attr("data-d");
+                      var n = Cheerio(Curry._2(Cheerio$BsCheerio.select, dom, "li").get(1)).attr("data-d");
                       return Jest.Expect.toEqual("LI_1_data", Jest.Expect.expect(Belt_Option.getWithDefault((n == null) ? undefined : Caml_option.some(n), "")));
                     }));
       }));
@@ -87,40 +88,40 @@ Jest.describe("get", (function (param) {
 Jest.describe("attr1", (function (param) {
         var dom = Cheerio.load(html);
         Jest.test("Some(p) when a prop exists", (function (param) {
-                return Jest.Expect.toEqual("LI_1_data", Jest.Expect.expect(Caml_option.nullable_to_opt(Cheerio$BsCheerio.select(dom, "li#LI_1_id").attr("data-d"))));
+                return Jest.Expect.toEqual("LI_1_data", Jest.Expect.expect(Caml_option.nullable_to_opt(Curry._2(Cheerio$BsCheerio.select, dom, "li#LI_1_id").attr("data-d"))));
               }));
         Jest.test("None when a prop doesn't exist", (function (param) {
-                return Jest.Expect.toEqual(undefined, Jest.Expect.expect(Caml_option.nullable_to_opt(Cheerio$BsCheerio.select(dom, "li#LI_1_id").attr("made-up-prop"))));
+                return Jest.Expect.toEqual(undefined, Jest.Expect.expect(Caml_option.nullable_to_opt(Curry._2(Cheerio$BsCheerio.select, dom, "li#LI_1_id").attr("made-up-prop"))));
               }));
         return Jest.test("None when an element doesn't exist", (function (param) {
-                      return Jest.Expect.toEqual(undefined, Jest.Expect.expect(Caml_option.nullable_to_opt(Cheerio$BsCheerio.select(dom, "li#IDontExist").attr("me-neither"))));
+                      return Jest.Expect.toEqual(undefined, Jest.Expect.expect(Caml_option.nullable_to_opt(Curry._2(Cheerio$BsCheerio.select, dom, "li#IDontExist").attr("me-neither"))));
                     }));
       }));
 
 Jest.describe("attr2", (function (param) {
         var dom = Cheerio.load(html);
         Jest.test("Sets value of an existing element", (function (param) {
-                return Jest.Expect.toEqual("some-value", Jest.Expect.expect(Caml_option.nullable_to_opt(Cheerio$BsCheerio.select(dom, "li#LI_1_id").attr("data-sth", "some-value").attr("data-sth"))));
+                return Jest.Expect.toEqual("some-value", Jest.Expect.expect(Caml_option.nullable_to_opt(Curry._2(Cheerio$BsCheerio.select, dom, "li#LI_1_id").attr("data-sth", "some-value").attr("data-sth"))));
               }));
         Jest.test("None when trying to set a value of a nonexisting element", (function (param) {
-                return Jest.Expect.toEqual(undefined, Jest.Expect.expect(Caml_option.nullable_to_opt(Cheerio$BsCheerio.select(dom, "li#IDontExist").attr("data-sth", "some-value").attr("data-sth"))));
+                return Jest.Expect.toEqual(undefined, Jest.Expect.expect(Caml_option.nullable_to_opt(Curry._2(Cheerio$BsCheerio.select, dom, "li#IDontExist").attr("data-sth", "some-value").attr("data-sth"))));
               }));
         return Jest.test("Removes the attr if `null` is passed", (function (param) {
-                      return Jest.Expect.toEqual(undefined, Jest.Expect.expect(Caml_option.nullable_to_opt(Cheerio$BsCheerio.select(dom, "li#LI_1_id").attr("data-d", null).attr("data-d"))));
+                      return Jest.Expect.toEqual(undefined, Jest.Expect.expect(Caml_option.nullable_to_opt(Curry._2(Cheerio$BsCheerio.select, dom, "li#LI_1_id").attr("data-d", null).attr("data-d"))));
                     }));
       }));
 
 Jest.describe("next", (function (param) {
         var dom = Cheerio.load(html);
         return Jest.test("Some when found the next node", (function (param) {
-                      return Jest.Expect.toEqual("LI_1_id", Jest.Expect.expect(Caml_option.nullable_to_opt(Cheerio$BsCheerio.select(dom, "li#LI_0_id").next().attr("id"))));
+                      return Jest.Expect.toEqual("LI_1_id", Jest.Expect.expect(Caml_option.nullable_to_opt(Curry._2(Cheerio$BsCheerio.select, dom, "li#LI_0_id").next().attr("id"))));
                     }));
       }));
 
 Jest.describe("properties", (function (param) {
         var dom = Cheerio.load(html);
         return Jest.test("type", (function (param) {
-                      return Jest.Expect.toEqual(/* Tag */1, Jest.Expect.expect(Element$BsCheerio.decodeType(Element$BsCheerio.type_(Cheerio$BsCheerio.select(dom, "ul")))));
+                      return Jest.Expect.toEqual(/* Tag */1, Jest.Expect.expect(Element$BsCheerio.decodeType(Curry._1(Element$BsCheerio.type_, Curry._2(Cheerio$BsCheerio.select, dom, "ul")))));
                     }));
       }));
 
@@ -139,7 +140,7 @@ Jest.describe("each", (function (param) {
                           ]
                         ]
                       };
-                      Cheerio$BsCheerio.select(dom, "ul").contents().each((function (i, param) {
+                      Curry._2(Cheerio$BsCheerio.select, dom, "ul").contents().each((function (i, param) {
                               visited.contents = Belt_List.mapWithIndex(visited.contents, (function (j, v) {
                                       if (v) {
                                         return true;
@@ -165,12 +166,12 @@ Jest.describe("each", (function (param) {
 Jest.describe("map", (function (param) {
         var dom = Cheerio.load(html);
         return Jest.test("maps over items", (function (param) {
-                      return Jest.Expect.toEqual([
+                      return Jest.Expect.toEqual(/* array */[
                                   "LI_0",
                                   "LI_1",
                                   "LI_2",
                                   ""
-                                ], Jest.Expect.expect(Cheerio$BsCheerio.select(dom, "li").map((function (param, el) {
+                                ], Jest.Expect.expect(Curry._2(Cheerio$BsCheerio.select, dom, "li").map((function (param, el) {
                                               return Cheerio(el).text();
                                             })).toArray()));
                     }));
@@ -179,7 +180,7 @@ Jest.describe("map", (function (param) {
 Jest.describe("toArray", (function (param) {
         var dom = Cheerio.load(html);
         return Jest.test("returns a list", (function (param) {
-                      return Jest.Expect.toEqual(4, Jest.Expect.expect(Cheerio$BsCheerio.select(dom, "li").toArray().length));
+                      return Jest.Expect.toEqual(4, Jest.Expect.expect(Curry._2(Cheerio$BsCheerio.select, dom, "li").toArray().length));
                     }));
       }));
 

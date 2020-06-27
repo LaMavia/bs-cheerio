@@ -5,4 +5,4 @@
 var select = (($, selector) => $(selector));
 
 exports.select = select;
-/* No side effect */
+/* select Not a pure module */

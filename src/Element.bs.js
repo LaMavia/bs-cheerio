@@ -29,11 +29,13 @@ function decodeNodeType(type_index) {
   }
 }
 
-var type_ = (x => {
+var type_ = (
+  x => {
     if(!x || x.length == 0) return ""
     if(x[0]) return x[0].type
     return x.type
-  });
+  }
+);
 
 function decodeType(t_) {
   switch (t_) {
@@ -57,4 +59,4 @@ function decodeType(t_) {
 exports.decodeNodeType = decodeNodeType;
 exports.type_ = type_;
 exports.decodeType = decodeType;
-/* No side effect */
+/* type_ Not a pure module */

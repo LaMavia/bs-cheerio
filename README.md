@@ -1,18 +1,37 @@
-# Basic Reason Template
+# Bs-Cheerio
+(Cheerio)[https://www.npmjs.com/package/cheerio] bindings for ReasonML.
 
-Hello! This project allows you to quickly get started with Reason and BuckleScript. If you wanted a more sophisticated version, try the `react` template (`bsb -theme react -init .`).
+# Quick start
+## Installation
+> npm i bs-cheerio
+## Examples
+1. Selecting the `href` of a link.
+   ```reason
+   open BsCheerio;
+   open Js.Promise;
+   open PromiseMonad;
 
-# Build
-```
-npm run build
-```
+   let releases_url = "https://github.com/VSCodium/vscodium/releases";
 
-# Build + Watch
-
-```
-npm run start
-```
-
-
-# Editor
-If you use `vscode`, Press `Windows + Shift + B` it will build automatically
+   Fetch.fetch(releases_url)
+   >>= Fetch.Response.text
+   >>- (
+     html => {
+       Cheerio.load(html)
+       ->Cheerio.select(
+           {js|.d-flex.flex-items-center.min-width-0[href$="amd64.deb"]|js},
+         )
+       ->Element.attr1("href");
+     }
+   )
+   >>- Js.Console.log;
+   // => "/VSCodium/vscodium/releases/download/1.46.1/codium_1.46.1-1592564058_amd64.deb"
+   ```
+1. Extracting texts from matching elements
+  ```reason
+  dom
+    ->Cheerio.select(".pochodzenie > tbody > tr .pochodzenie_jezyk")
+    ->Element.map((_, e) => e->Element.load->Element.text0)
+    ->Element.toArray
+    // => array(string)
+  ```
